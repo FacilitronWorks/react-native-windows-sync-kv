@@ -1,0 +1,57 @@
+{
+  "name": "@facilitronworks/react-native-windows-sync-kv",
+  "version": "0.1.0-pre.0",
+  "description": "Synchronous, persistent key/value storage for React Native Windows (new architecture) — the primitive RNW does not have. File-backed via ApplicationData.LocalFolder, exposed to JS through REACT_SYNC_METHOD so reads return values, not promises.",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "source": "src/index.ts",
+  "react-native": "src/index.ts",
+  "files": [
+    "src",
+    "windows/RNWSyncKv/RNWSyncKv.vcxproj",
+    "windows/RNWSyncKv/RNWSyncKv.vcxproj.filters",
+    "windows/RNWSyncKv/RNWSyncKv.def",
+    "windows/RNWSyncKv/PropertySheet.props",
+    "windows/RNWSyncKv/*.idl",
+    "windows/RNWSyncKv/*.h",
+    "windows/RNWSyncKv/*.cpp",
+    "windows/ExperimentalFeatures.props",
+    "react-native.config.js",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "react-native",
+    "react-native-windows",
+    "windows",
+    "storage",
+    "key-value",
+    "synchronous",
+    "mmkv",
+    "async-storage",
+    "persistence",
+    "offline-first",
+    "turbomodule",
+    "fabric",
+    "winrt"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FacilitronWorks/react-native-windows-sync-kv.git"
+  },
+  "license": "MIT",
+  "peerDependencies": {
+    "react-native": ">=0.76.0",
+    "react-native-windows": ">=0.76.0"
+  },
+  "react-native-windows": {
+    "init-windows": {
+      "name": "RNWSyncKv",
+      "namespace": "RNWSyncKv",
+      "template": "cpp-lib"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
