@@ -1,6 +1,6 @@
 {
   "name": "@facilitronworks/react-native-windows-sync-kv",
-  "version": "0.1.0-pre.0",
+  "version": "0.1.0-pre.1",
   "description": "Synchronous, persistent key/value storage for React Native Windows (new architecture) — the primitive RNW does not have. File-backed via ApplicationData.LocalFolder, exposed to JS through REACT_SYNC_METHOD so reads return values, not promises.",
   "main": "src/index.ts",
   "types": "src/index.ts",

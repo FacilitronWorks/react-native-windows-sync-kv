@@ -2,7 +2,7 @@
 
 **Synchronous, persistent key/value storage for React Native Windows** on the new architecture (Fabric / Composition) — the storage primitive RNW does not have.
 
-> **Status: pre-release (`0.1.0-pre.0`).**
+> **Status: pre-release (`0.1.0-pre.1`).**
 > The C++ implementation is extracted from a shipping production Windows app (RNW 0.83.2, Windows-on-ARM and x64), where it is the storage engine behind four separate JS packages' Windows shims.
 >
 > **What is verified here:** see [Verification status](#verification-status). Read it before depending on this.
@@ -26,7 +26,7 @@ In the app it was extracted from, this single native module backs Windows shims 
 
 ## How it works
 
-- Hydrates one JSON blob from `ApplicationData.LocalFolder\RNWSyncKv.json` into an in-memory `std::unordered_map` **once**, lazily, on first access (mirroring MMKV's mmap-hydrate-once model), via synchronous `std::ifstream`.
+- Hydrates one JSON blob from `ApplicationData.LocalFolder\SyncKV.json` into an in-memory `std::unordered_map` **once**, lazily, on first access (mirroring MMKV's mmap-hydrate-once model), via synchronous `std::ifstream`.
 - Serves reads and writes from that map with zero async hops.
 - Debounces writes (300 ms quiet period) onto a background thread, then persists by writing a sibling `.tmp` and `MoveFileExW(..., MOVEFILE_REPLACE_EXISTING)` — so a kill mid-write can only corrupt the temp file, never the real one.
 - `clearAll()` flushes **synchronously**, so a logout/purge is durable immediately.
@@ -105,7 +105,7 @@ export const storage = createStore('mmkv');
 - **Values are strings.** Serialize anything else yourself (`createStore` coerces booleans and numbers via `String()` and parses them back). The on-disk format is a flat JSON object of string→string; a non-string JSON value in a hand-edited file is skipped at hydrate.
 - **`getString()` cannot distinguish "missing" from `''`.** Use `contains()` — or `createStore`, which does this for you.
 - **This blocks the JS thread.** Storing megabytes per key and reading them in a render path will show up as jank. It is a preferences/session store, not a database.
-- **Not encrypted.** `LocalFolder\RNWSyncKv.json` is plain JSON on disk. Shimming `expo-secure-store` or `react-native-encrypted-storage` onto it gives you their *API*, not their *security guarantee*. Do not put secrets here without adding encryption (e.g. DPAPI) yourself.
+- **Not encrypted.** `LocalFolder\SyncKV.json` is plain JSON on disk. Shimming `expo-secure-store` or `react-native-encrypted-storage` onto it gives you their *API*, not their *security guarantee*. Do not put secrets here without adding encryption (e.g. DPAPI) yourself.
 - **The store is process-wide and unpartitioned.** Two libraries choosing the same key collide. Namespace via `createStore`.
 - **Building from source requires a NuGet restore first** (`msbuild -restore`). Without it the CppWinRT targets never load, `.idl` files fall through to classic `midl.exe` instead of `midlrt`, and every `namespace` declaration fails with `MIDL2025`.
 
@@ -123,6 +123,11 @@ export const storage = createStore('mmkv');
 - The `src/index.ts` **JS layer is new to this package** and was not extracted from the production app (which called the native module through its own per-package shims). It typechecks; it has not been run.
 - No example app, no automated tests, no CI.
 - Behaviour under multiple processes/instances of the same app sharing one `LocalFolder` is undefined and untested — last writer wins, at best.
+
+## Changelog
+
+- **0.1.0-pre.1** — backing store file is now `SyncKV.json` (was `RNWSyncKv.json`), so it adopts an existing `SyncKV.json` store in place; drop-in for consumers migrating off the in-tree module.
+- **0.1.0-pre.0** — initial pre-release.
 
 ## License
 

@@ -87,7 +87,7 @@ namespace winrt::RNWSyncKv::implementation
         inline std::wstring FilePath()
         {
             auto folder = winrt::Windows::Storage::ApplicationData::Current().LocalFolder();
-            return std::wstring(folder.Path().c_str()) + L"\\RNWSyncKv.json";
+            return std::wstring(folder.Path().c_str()) + L"\\SyncKV.json";
         }
 
         // Hydrate the in-memory map from disk exactly once (caller holds mapMutex).
@@ -119,7 +119,7 @@ namespace winrt::RNWSyncKv::implementation
         }
 
         // Serialize the whole map (snapshot under the data mutex, IO outside it) and
-        // atomically replace RNWSyncKv.json via a sibling temp file. A kill mid-write can
+        // atomically replace SyncKV.json via a sibling temp file. A kill mid-write can
         // only leave the .tmp partial — the real file is always whole. flushMutex
         // serializes concurrent callers (worker vs clearAll) so they can't interleave
         // writes to the same .tmp path.
