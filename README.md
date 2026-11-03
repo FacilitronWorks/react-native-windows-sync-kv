@@ -124,6 +124,31 @@ export const storage = createStore('mmkv');
 - No example app, no automated tests, no CI.
 - Behaviour under multiple processes/instances of the same app sharing one `LocalFolder` is undefined and untested — last writer wins, at best.
 
+### react-native-windows 0.85.0
+
+**PASSED, no source changes needed.** The published package, unchanged, was autolinked into two
+production Expo apps (Facilitron FIT and Facilitron Works) on
+react-native 0.85.3 + react-native-windows 0.85.0 and compiled and linked with them:
+
+| Platform | Configuration | Result |
+| --- | --- | --- |
+| ARM64 | Release | ✅ `RNWSyncKv.dll` built in both apps |
+| x64 | Release | ✅ `RNWSyncKv.dll` built in both apps |
+
+- **Toolchain:** Visual Studio 2026 (18.6), MSVC 14.51 (`v145`), Windows SDK 10.0.22621.0,
+  WinAppSDK 1.8.260508005, with `Microsoft.ReactNative` built from source (the apps' own RNW 0.85.0
+  patch applied), on Windows 11 ARM64.
+- `autolink-windows` on 0.85.0 generates the same `AutolinkedNativeModules.g.*` as on 0.83.2.
+- The react-native-windows C++ surface this package calls did not change between 0.83.2 and 0.85.0.
+- **Known react-native-windows 0.85.0 crash, not in this package:** pressing Tab to move focus onto a
+  view that has a `backgroundColor` terminates the app
+  ([microsoft/react-native-windows#16527](https://github.com/microsoft/react-native-windows/issues/16527)).
+  It is fixed on RNW `main` by the one-line
+  [#16386](https://github.com/microsoft/react-native-windows/pull/16386), which is not in 0.85.0; apps on
+  0.85.0 should carry that line until a 0.85.x release ships it.
+- **Not covered yet:** the Visual Studio 2022 `v143` toolset, x86, and on-device runtime testing on
+  0.85.0.
+
 ## Changelog
 
 - **0.1.0-pre.1** — backing store file is now `SyncKV.json` (was `RNWSyncKv.json`), so it adopts an existing `SyncKV.json` store in place; drop-in for consumers migrating off the in-tree module.
